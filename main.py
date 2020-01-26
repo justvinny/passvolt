@@ -1,9 +1,19 @@
+'''
+Simple password manager app to store complex passwords for various platforms.
+This project's GUI is made with tkinter and python 3x. 
+
+Author: github.com/justvinny
+
+Dependencies: pyperclip 
+'''
+
 import tkinter as tk
 import tkinter.ttk as ttk
 import shelve
 import pyperclip
 
-buttonColor = '#b3b3b3'
+buttonColor = 'silver' # Background color for all buttons
+
 
 # Login Screen
 class App(tk.Frame):
@@ -14,57 +24,78 @@ class App(tk.Frame):
 		self.m_frame_config()
 		self.m_frame()
 
-		self.pack(fill=tk.BOTH, expand=True)
+		self.place(relx=.05, rely=.05, relwidth=.9, relheight=.9)
 
 	def m_frame_config(self):
-		self.config(bg='black')
+		self.config(bg='white')
 
 	def m_frame(self):
-
-		# Configuring our styles for ttk widgets.
-		self.style = ttk.Style(self)
-		self.style.configure('TLabel', background ='black', foreground='white', font=(None,20))
-
+		# Defining our style
+		self.style = ttk.Style()
+		self.style.configure('TLabel', background='white', font=('Helvetica',15,'bold'))
+		self.style.configure('Title.TLabel', background='white', font=('Helvetica',30, 'bold','underline'))
 		# Defining our label widgets.
-		self.label1 = ttk.Label(self, text='Pass Volt')
-		self.label2 = ttk.Label(self, text='What is the secret word?')
-		self.label3 = ttk.Label(self, text='What is the password?')
-		self.label4 = tk.Label(self, text='', bg='black', fg='lime', font=(None,20))
+		self.labelTitle = ttk.Label(self, text='Pass Volt', style='Title.TLabel', anchor='center')
+		self.labelSword = ttk.Label(self, text='Username ', anchor='e')
+		self.labelPword = ttk.Label(self, text='Password ', anchor='e')
+		self.labelStatus = tk.Label(self, text='', bg='white', font=('Helvetica',15,'bold'), anchor='center')
 
 		# Defining our entry widgets.
-		self.entry1 = tk.Entry(self, show='*')
-		self.entry2 = tk.Entry(self, show='*')
+		self.entrySword = tk.Entry(self)
+		self.entryPword = tk.Entry(self, show='*')
 
 		# Defining our submit button. 
-		self.button1 = tk.Button(self, text='Submit', font=('Helvetica',20,'bold'), bg=buttonColor, fg='black', command=self.submit_call)
+		self.buttonSubmit = tk.Button(self, text='Submit', font=('Helvetica',15,'bold'), bg=buttonColor, fg='black', command=self.submit_call)
+		self.buttonSubmit.bind('<Return>', lambda event: self.submit_call(event))
 
 		# Packing our widgets onto the screen.
-		self.label1.pack()
-		ttk.Label(self).pack()
-		self.label2.pack()
-		ttk.Label(self).pack()
-		self.entry1.pack()
-		ttk.Label(self).pack()
-		self.label3.pack()
-		ttk.Label(self).pack()
-		self.entry2.pack()
-		ttk.Label(self).pack()
-		self.button1.pack()
-		ttk.Label(self).pack()
-		self.label4.pack()
+		self.labelTitle.place(relx=.25, rely=.18, relwidth=.5, relheight=.1)
+		self.labelSword.place(relx=.25, rely=.33, relwidth=.25, relheight=.05)
+		self.entrySword.place(relx=.5, rely=.33, relwidth=.23, relheight=.05)
+		self.labelPword.place(relx=.25, rely=.39, relwidth=.25, relheight=.05)
+		self.entryPword.place(relx=.5, rely=.39, relwidth=.23, relheight=.05)
+		self.buttonSubmit.place(relx=.375, rely=.45, relwidth=.25, relheight=.08)
+		self.labelStatus.place(relx=0, rely=.55, relwidth=1, relheight=.05)
+
 
 	# Check if input matches the one stored in database and then open a new frame. 
-	def submit_call(self):
+	def submit_call(self, event=None):
+		checkIfEmpty = ''
+
 		with shelve.open('data') as file:
-			if self.entry1.get() == file['gtype'] and self.entry2.get() == file['main_pword']:
-				self.label4['fg'] = 'green'
-				self.label4['text'] = 'Success!'
-				self.destroy()
-				MainWindow(root)
-				
+			for each in file:
+				checkIfEmpty += each
+
+		# If dbm file is empty, register a new account based on user input. 
+		if checkIfEmpty == '':
+			# Very simple input validation just to assure user doesn't accidentally reigster a blank account.
+			if len(self.entrySword.get()) < 8 or len(self.entryPword.get()) < 8:
+				self.labelStatus['fg'] = 'red'
+				self.labelStatus['text'] = 'Invalid username or password.'
+			
 			else:
-				self.label4['fg'] = 'red'
-				self.label4['text'] = 'Wrong password!'
+				with shelve.open('data') as file:
+					file['user'] = self.entrySword.get()
+					file['pword'] = self.entryPword.get()
+
+					self.labelStatus['fg'] = 'green'
+					self.labelStatus['text'] = 'Account successfully registered! Logging in!'
+					self.after(1000, self.submit_call)
+
+		# If dbm file is NOT empty, move to the next window if account details are correct. 
+		else:
+			with shelve.open('data') as file:
+					# Checks if username and password matches what is stored in the dbm file. 
+					if self.entrySword.get() == file['user'] and self.entryPword.get() == file['pword']:
+						self.labelStatus['fg'] = 'green'
+						self.labelStatus['text'] = 'Success!'
+						self.destroy()
+						MainWindow(root)
+					
+					else:
+						self.labelStatus['fg'] = 'red'
+						self.labelStatus['text'] = 'Wrong password!'
+
 
 # Main window after successful login.
 class MainWindow(tk.Frame):
@@ -88,10 +119,10 @@ class MainWindow(tk.Frame):
 		self.buttonsDic = {}
 		self.mButtonPos = 0.075
 
-		self.topFrame = tk.Frame(self, bg='black')
+		self.topFrame = tk.Frame(self, bg='white')
 		self.topFrame.place(relheight=.7, relwidth=1)
 
-		tk.Label(self.topFrame, bg='black').pack()
+		tk.Label(self.topFrame, bg='white').pack()
 
 		# Check paltforms data file for a list of services/platforms you are using that has a saved password
 		with shelve.open('platform') as file:
@@ -116,15 +147,15 @@ class MainWindow(tk.Frame):
 	# Status bar for button press.
 	def mid_frame(self):
 		self.var1 = tk.StringVar()
-		self.midFrame = tk.Frame(self, bg='black')
-		self.sample = tk.Label(self.midFrame, textvariable=self.var1, font=(None,12), bg='black', fg='white')
+		self.midFrame = tk.Frame(self, bg='white')
+		self.sample = tk.Label(self.midFrame, textvariable=self.var1, bg='white', font=(None,12))
 
 		self.midFrame.place(rely=.7, relheight=.1, relwidth=1)
 		self.sample.pack(fill=tk.BOTH, expand=True)
 
 	# Menu buttons for navigation. 
 	def bot_frame(self):
-		self.botFrame = tk.Frame(self, bg='black')
+		self.botFrame = tk.Frame(self, bg='white')
 		self.buttonCreate = tk.Button(self.botFrame, text='New Platform', font=('Helvetica',20,'bold'), command=self.create_call, bg=buttonColor, fg='black')
 		self.buttonDelete = tk.Button(self.botFrame, text='Remove Platform', font=('Helvetica',20,'bold'), command=self.w_delete_call, bg=buttonColor, fg='black')
 		self.buttonBack = tk.Button(self.botFrame, text='Back', font=('Helvetica',20,'bold'), command=self.back_call, bg=buttonColor, fg='black')
@@ -162,17 +193,17 @@ class CreateWindow(tk.Frame):
 		self.pack(fill=tk.BOTH, expand=True)
 
 	def c_frame_config(self):
-		self['bg'] = 'black'
+		self['bg'] = 'white'
 
 	def c_frame_top(self):
-		self.platformLabel = tk.Label(self, text='Platform', font=(None,20), bg='black', fg='white')
-		self.userLabel = tk.Label(self, text='Username', font=(None,20), bg='black', fg='white')
-		self.passLabel = tk.Label(self, text='Password', font=(None,20), bg='black', fg='white')
+		self.platformLabel = tk.Label(self, text='Platform', font=(None,20))
+		self.userLabel = tk.Label(self, text='Username', font=(None,20))
+		self.passLabel = tk.Label(self, text='Password', font=(None,20))
 		self.platformName = tk.Entry(self)
 		self.username = tk.Entry(self)
 		self.password = tk.Entry(self)
 		self.statusVar = tk.StringVar()
-		self.statusLabel = tk.Label(self, textvariable=self.statusVar, font=(None,20), bg='black', fg='white')
+		self.statusLabel = tk.Label(self, textvariable=self.statusVar, font=(None,20))
 
 		self.platformLabel.place(relx=0, rely=0, relwidth=.5, relheight=.1)
 		self.userLabel.place(relx=0, rely=.1, relwidth=.5, relheight=.1)
@@ -219,7 +250,7 @@ class DeleteWindow(tk.Frame):
 	def d_frame_top(self):
 		self.dButtonDic = {}
 		buttonPos = 0.05
-		self.frameTop = tk.Frame(self, bg='black')
+		self.frameTop = tk.Frame(self)
 
 		with shelve.open('platform') as file:
 			for key in file:
@@ -234,7 +265,7 @@ class DeleteWindow(tk.Frame):
 
 
 	def d_frame_bot(self):
-		self.frameBot = tk.Frame(self, bg='black')
+		self.frameBot = tk.Frame(self)
 		self.deleteButton = tk.Button(self.frameBot, text='Remove Platform', bg=buttonColor, fg='black', font=('Helvetica',20,'bold'), command=self.delete_call) 
 		self.backButton =  tk.Button(self.frameBot, text='Back', bg=buttonColor, fg='black', font=('Helvetica',20,'bold'), command=self.back_call)
 
@@ -268,5 +299,6 @@ if __name__ == '__main__':
 	root = tk.Tk()
 	root.title('Pass Volt')
 	root.geometry('600x500')
+	root.config(bg='black')
 	App(root)
 	root.mainloop()
