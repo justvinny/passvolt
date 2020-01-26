@@ -28,5 +28,5 @@ Work in progress:
 
   *GUI design and formatting
   
-  COMPLETED on 26/1/2020 --*Create Pass Volt password page if new user.--
+  COMPLETED on 26/1/2020 --\*Create Pass Volt password page if new user.--
   
