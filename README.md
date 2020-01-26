@@ -12,21 +12,16 @@ This shold be a secure solution as long as you do not share the dbm file to othe
 
 
 Current Features:
-
-*Login page so only you can access the data. Input fields characters are also hidden to protect your account from prying eyes. :)
-
-*Input validation for entry fields. Also, if new user, automatically creates account based on first input.  
-  
-*Create new platform accounts that will be stored in the dbm file.
-  
-*Delete existing accounts that will be removed from the dbm file.
-  
-*Using the pyperclip module, automatically copies the password to the clipboard.
+* Login page so only you can access the data. Input fields characters are also hidden to protect your account from prying eyes. :)
+* Input validation for entry fields. Also, if new user, automatically creates account based on first input.  
+* Create new platform accounts that will be stored in the dbm file.
+* Delete existing accounts that will be removed from the dbm file.
+* Using the pyperclip module, automatically copies the password to the clipboard.
   
   
 Work in progress:
 
-*GUI design and formatting
+* GUI design and formatting
   
-*~~Create Pass Volt password page if new user.~~ COMPLETED 26/1/2020
+* ~~Create Pass Volt password page if new user.~~ COMPLETED 26/1/2020
   
