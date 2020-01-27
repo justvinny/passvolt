@@ -10,6 +10,7 @@ This shold be a secure solution as long as you do not share the dbm file to othe
 Current Features:
 
 * Login page so only you can access the data. Input fields characters are also hidden to protect your account from prying eyes. :)
+* Binded enter to Login button when highlighted with tab key.
 * Input validation for entry fields. Also, if new user, automatically creates account based on first input.  
 * Main menu/navigation that is located on the left part of the screen.
 * Create new platform accounts that will be stored in the dbm file.
