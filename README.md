@@ -15,6 +15,7 @@ Current Features:
 * Main menu/navigation that is located on the left part of the screen.
 * Create new platform accounts that will be stored in the dbm file.
 * Delete existing accounts that will be removed from the dbm file.
+* Remove allows multiple selection for easy deletion.
 * Status bar that shows results based on button presses is located on the lower right side of the screen.
 * Using the pyperclip module, automatically copies the password to the clipboard.
   
