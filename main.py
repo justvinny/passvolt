@@ -12,11 +12,12 @@ import tkinter.ttk as ttk
 import shelve
 import pyperclip
 
-buttonColor = 'silver' # Background color for all buttons
+buttonColor = '#0099ff' # Background color for all active buttons.
+menuColor = '#2f2f1e' # Background color for all menu frames. 
 
 
 # Login Screen
-class App(tk.Frame):
+class Login(tk.Frame):
 	def __init__(self, master):
 		super().__init__(master)
 		self.master = master
@@ -24,11 +25,13 @@ class App(tk.Frame):
 		self.m_frame_config()
 		self.m_frame()
 
-		self.place(relx=.05, rely=.05, relwidth=.9, relheight=.9)
+		self.place(relx=.25, rely=0.03, relwidth=.74, relheight=.91)
 
+	# All configuration for the App frame goes here. 
 	def m_frame_config(self):
 		self.config(bg='white')
 
+	# All the widgets for m_frame. 
 	def m_frame(self):
 		# Defining our style
 		self.style = ttk.Style()
@@ -39,13 +42,12 @@ class App(tk.Frame):
 		self.labelSword = ttk.Label(self, text='Username ', anchor='e')
 		self.labelPword = ttk.Label(self, text='Password ', anchor='e')
 		self.labelStatus = tk.Label(self, text='', bg='white', font=('Helvetica',15,'bold'), anchor='center')
-
 		# Defining our entry widgets.
 		self.entrySword = tk.Entry(self)
 		self.entryPword = tk.Entry(self, show='*')
-
 		# Defining our submit button. 
-		self.buttonSubmit = tk.Button(self, text='Submit', font=('Helvetica',15,'bold'), bg=buttonColor, fg='black', command=self.submit_call)
+		self.buttonSubmit = tk.Button(self, text='Submit', font=('Helvetica',15,'bold'), bg=menuColor, fg='white',
+		 activebackground=buttonColor, command=self.submit_call)
 		self.buttonSubmit.bind('<Return>', lambda event: self.submit_call(event))
 
 		# Packing our widgets onto the screen.
@@ -57,7 +59,6 @@ class App(tk.Frame):
 		self.buttonSubmit.place(relx=.375, rely=.45, relwidth=.25, relheight=.08)
 		self.labelStatus.place(relx=0, rely=.55, relwidth=1, relheight=.05)
 
-
 	# Check if input matches the one stored in database and then open a new frame. 
 	def submit_call(self, event=None):
 		checkIfEmpty = ''
@@ -68,7 +69,7 @@ class App(tk.Frame):
 
 		# If dbm file is empty, register a new account based on user input. 
 		if checkIfEmpty == '':
-			# Very simple input validation just to assure user doesn't accidentally reigster a blank account.
+			# Very simple input validation just to ensure user doesn't accidentally register a blank account.
 			if len(self.entrySword.get()) < 8 or len(self.entryPword.get()) < 8:
 				self.labelStatus['fg'] = 'red'
 				self.labelStatus['text'] = 'Invalid username or password.'
@@ -79,8 +80,8 @@ class App(tk.Frame):
 					file['pword'] = self.entryPword.get()
 
 					self.labelStatus['fg'] = 'green'
-					self.labelStatus['text'] = 'Account successfully registered! Logging in!'
-					self.after(1000, self.submit_call)
+					self.labelStatus['text'] = 'Account successfully registered! Logging in...'
+					self.after(1500, self.submit_call)
 
 		# If dbm file is NOT empty, move to the next window if account details are correct. 
 		else:
@@ -89,216 +90,307 @@ class App(tk.Frame):
 					if self.entrySword.get() == file['user'] and self.entryPword.get() == file['pword']:
 						self.labelStatus['fg'] = 'green'
 						self.labelStatus['text'] = 'Success!'
-						self.destroy()
-						MainWindow(root)
-					
+						self.after(1500, self.new_window)
 					else:
 						self.labelStatus['fg'] = 'red'
 						self.labelStatus['text'] = 'Wrong password!'
 
+	def new_window(self):
+		self.destroy()
+		ourMenu.menu_buttons()
+		ourMenu.home_call()
+
 
 # Main window after successful login.
-class MainWindow(tk.Frame):
+class MainMenu(tk.Frame):
 	def __init__(self,master):
 		super().__init__(master)
 		self.master = master
+		self.master.geometry('850x550')
 
 		self.frame_config()
-
-		self.top_frame()
-		self.mid_frame()
-		self.bot_frame()
+		self.frame_menu()
 
 		self.pack(fill=tk.BOTH, expand=True)
 
+	# All configuration for MainMenu frame goes here. 
 	def frame_config(self):
-		self['bg'] = 'black'
+		self['bg'] = menuColor
 
-	def top_frame(self):
-		self.platforms = []
-		self.buttonsDic = {}
-		self.mButtonPos = 0.075
+	# Main menu frame and its widgets.
+	def frame_menu(self):
+		self.menu = tk.Frame(self, bg=menuColor)
+		self.menu.place(relwidth=.25, relheight=1)
 
-		self.topFrame = tk.Frame(self, bg='white')
-		self.topFrame.place(relheight=.7, relwidth=1)
+	# Main menu frame and its widgets.
+	def menu_buttons(self):
+		# Boolean values to check which frame--HomeFrame, RegisterFrame or RemoveFrame--is being used.
+		self.fHome = False
+		self.fRegister = False
+		self.fRemove = False
 
-		tk.Label(self.topFrame, bg='white').pack()
+		# Defining our widgets for the menu frame.
+		self.buttonHome = tk.Button(self.menu, text='Home', command=self.home_call)
+		self.buttonRegister = tk.Button(self.menu, text='Register', command=self.register_call)
+		self.buttonRemove = tk.Button(self.menu, text='Remove', command=self.remove_call)
+		self.buttonBack = tk.Button(self.menu, text='Exit', command=root.destroy)
 
-		# Check paltforms data file for a list of services/platforms you are using that has a saved password
-		with shelve.open('platform') as file:
-			for each in file:
-				self.platforms.append(each.title()) # Append to self.platforms list for easy generation of button widget.
+		# Configure our button properties
+		for each in [self.buttonHome, self.buttonRegister, self.buttonRemove, self.buttonBack]:
+			each['bg'] = menuColor
+			each['fg'] = 'white'
+			each['bd'] = 0
+			each['highlightthickness'] = 0
+			each['activebackground'] = buttonColor
+			each['font'] = ('Verdana', 10, 'bold')
 
-		# Make buttons for each platform.
-		for each in self.platforms:
-			self.buttonsDic.setdefault(each, tk.Button(self.topFrame, text=each, bg=buttonColor, fg='black', font=('Helvetica',14,'bold'), 
-														command=lambda x=each: self.get_password(x)))
-			self.buttonsDic[each].place(rely=self.mButtonPos, relx=.25, relheight=.075, relwidth=.5)
-			self.mButtonPos += .1
+		# Placing our widgets onto the menu frame. 
+		self.buttonHome.place(rely=.1, relwidth=1, relheight=.05)
+		self.buttonRegister.place(rely=.16, relwidth=1, relheight=.05)
+		self.buttonRemove.place(rely=.22, relwidth=1, relheight=.05)
+		self.buttonBack.place(rely=.28, relwidth=1, relheight=.05)
 
-	# Get password for platform. 
-	def get_password(self, event):
+	# Check which frame to destroy.
+	def check_destroy(self):
+		if self.fHome:
+			self.home.destroy()
+			self.fHome = False
 
-		with shelve.open('platform') as file:
-			pyperclip.copy(file[event.lower()]['pass'])
-			tempString = file[event.lower()]['user']
-			self.var1.set(f'Your password for {tempString} on {event} has been copied to clipboard!')
+		elif self.fRegister:
+			self.register.destroy()
+			self.fRegister = False
 
-	# Status bar for button press.
-	def mid_frame(self):
-		self.var1 = tk.StringVar()
-		self.midFrame = tk.Frame(self, bg='white')
-		self.sample = tk.Label(self.midFrame, textvariable=self.var1, bg='white', font=(None,12))
+		elif self.fRemove:
+			self.remove.destroy()
+			self.fRemove = False
 
-		self.midFrame.place(rely=.7, relheight=.1, relwidth=1)
-		self.sample.pack(fill=tk.BOTH, expand=True)
+	# Create home frame where we can get our stored accounts. 
+	def home_call(self):
+		self.check_destroy()
+		self.home = HomeFrame(self)
+		self.fHome = True
 
-	# Menu buttons for navigation. 
-	def bot_frame(self):
-		self.botFrame = tk.Frame(self, bg='white')
-		self.buttonCreate = tk.Button(self.botFrame, text='New Platform', font=('Helvetica',20,'bold'), command=self.create_call, bg=buttonColor, fg='black')
-		self.buttonDelete = tk.Button(self.botFrame, text='Remove Platform', font=('Helvetica',20,'bold'), command=self.w_delete_call, bg=buttonColor, fg='black')
-		self.buttonBack = tk.Button(self.botFrame, text='Back', font=('Helvetica',20,'bold'), command=self.back_call, bg=buttonColor, fg='black')
+	# Create register frame that has inputs to store new platforms and accounts.
+	def register_call(self):
+		self.check_destroy()
+		self.register = RegisterFrame(root)
+		self.fRegister = True
 
-		self.botFrame.place(rely=.8, relheight=.2, relwidth=1)
-		self.buttonCreate.place(rely=0, relx=0, relwidth=.5, relheight=.5)
-		self.buttonDelete.place(rely=0, relx=.5, relwidth=.5, relheight=.5)
-		self.buttonBack.place(rely=.5, relx=0, relwidth=1, relheight=.5)
-	# Create new window that has inputs to store new platforms and accounts.
-	def create_call(self):
-		self.destroy()
-		CreateWindow(root)
+	# Create remove frame for deleting current platforms and accounts.	
+	def remove_call(self):
+		self.check_destroy()
+		self.remove = RemoveFrame(root)
+		self.fRemove = True
 
-	# Create window for deleting current platforms and accounts.	
-	def w_delete_call(self):
-		self.destroy()
-		DeleteWindow(root)
 
-	# Go back to main window. 
-	def back_call(self):
-		self.destroy()
-		App(root)
-
-# New window for registering new platforms and accounts. 
-class CreateWindow(tk.Frame):
-
+# Status bar frame and its widgets.
+class StatusFrame(tk.Frame):
 	def __init__(self, master):
 		super().__init__(master)
 		self.master = master
-
-		self.c_frame_config()
-		self.c_frame_top()
-		self.c_frame_bot()
-
-		self.pack(fill=tk.BOTH, expand=True)
-
-	def c_frame_config(self):
 		self['bg'] = 'white'
 
-	def c_frame_top(self):
-		self.platformLabel = tk.Label(self, text='Platform', font=(None,20))
-		self.userLabel = tk.Label(self, text='Username', font=(None,20))
-		self.passLabel = tk.Label(self, text='Password', font=(None,20))
-		self.platformName = tk.Entry(self)
-		self.username = tk.Entry(self)
-		self.password = tk.Entry(self)
+		self.status_bar()
+
+		self.place(relx=.25, rely=.9525, relwidth=.74, relheight=.035)
+
+	def status_bar(self):
 		self.statusVar = tk.StringVar()
-		self.statusLabel = tk.Label(self, textvariable=self.statusVar, font=(None,20))
+		self.statusLabel = tk.Label(self, textvariable=self.statusVar, bg='white', anchor='e')
+		self.statusLabel.pack(fill=tk.BOTH, expand=True)
 
-		self.platformLabel.place(relx=0, rely=0, relwidth=.5, relheight=.1)
-		self.userLabel.place(relx=0, rely=.1, relwidth=.5, relheight=.1)
-		self.passLabel.place(relx=0, rely=.2, relwidth=.5, relheight=.1)
-		self.platformName.place(relx=.5, rely=0, relwidth=.5, relheight=.1)
-		self.username.place(relx=.5, rely=.1, relwidth=.5, relheight=.1)
-		self.password.place(relx=.5, rely=.2, relwidth=.5, relheight=.1)
-		self.statusLabel.place(rely=.7, relwidth=1, relheight=.1)
+		
+# Home frame for getting your stored passwords for each platform.
+class HomeFrame(tk.Frame):
+	def __init__(self, master):
+		super().__init__(master)
+		self.master = master
+		self['bg'] = 'white'
 
-	def c_frame_bot(self):
-		self.registerButton = tk.Button(self, text='Register Platform', font=('Helvetica',20,'bold'), bg=buttonColor, fg='black', command=self.register_platform)
-		self.backButton = tk.Button(self, text='Back', font=('Helvetica',20,'bold'), bg=buttonColor, fg='black', command=self.back_call)
+		self.home_frame()
 
-		self.registerButton.place(rely=.8, relwidth=1, relheight=.1)
-		self.backButton.place(rely=.9, relwidth=1, relheight=.1)
+		self.place(relx=.25, rely=0.03, relwidth=.74, relheight=.91)
 
-	def register_platform(self):
+	# Defining and placing our widgets to the frame.
+	def home_frame(self):
+		self.buttonDic = {} # Dictionary containing our dbm file buttons
+		self.xPos = .025
+		self.yPos = .025 
+		self.buttonFrame = tk.Frame(self, bg='white')
+		self.buttonFrame.place(rely=.115, relwidth=1, relheight=.83)
+
+		# Defining our buttons based on the contents of dbm file and storing them into a dictionary.
+		with shelve.open('platform') as file:
+			for each in file:
+				self.buttonDic.setdefault(each, tk.Button(self.buttonFrame, text=each.title(),
+				 command= lambda event = each: self.get_password(event)))
+
+		# Configuring the button appearance.
+		for each in self.buttonDic.keys():
+			self.buttonDic[each]['bg'] = menuColor
+			self.buttonDic[each]['fg'] = 'white'
+			self.buttonDic[each]['activebackground'] = buttonColor
+			self.buttonDic[each]['activeforeground'] = 'white'
+			self.buttonDic[each]['bd'] = 0
+			self.buttonDic[each]['highlightthickness'] = 0
+			self.buttonDic[each]['font'] = ('Verdana', 10, 'bold')
+
+		# Placing our buttons from the dictionary to the HomeFrame. 
+		for each in self.buttonDic.keys():
+			self.buttonDic[each].place(relx=self.xPos, rely=self.yPos, relwidth=.3, relheight=.3)
+			self.xPos += .325
+			if self.xPos > .9:
+				self.xPos = .025
+				self.yPos += .325
+
+		# Defining our title label.
+		self.labelHome = tk.Label(self, text='Stored Accounts', bg='white', font=('Verdana', 16, 'bold'), anchor='center')
+		self.labelLine = tk.Label(self, bg=menuColor)
+
+		# Placing our label onto the frame.
+		self.labelHome.place(relwidth=1, relheight=.1)
+		self.labelLine.place(rely=.1, relwidth=1, relheight=.015)
+			
+	# Get passwords for platform on press from the dbm file. 
+	def get_password(self, event):
 
 		with shelve.open('platform') as file:
-			file[self.platformName.get().lower()] = {'user':self.username.get(), 'pass':self.password.get()}
+			pyperclip.copy(file[event]['pass'])
+			tempString = file[event]['user']
+			ourStatus.statusVar.set(f'Your password for {tempString} on {event.title()} has been copied to clipboard')
 
-		self.statusVar.set('Successfully registered!')
-		self.statusLabel['fg'] = 'lime'
 
-	def back_call(self):
-		self.destroy()
-		MainWindow(root)
+# New window for registering new platforms and accounts. 
+class RegisterFrame(tk.Frame):
+	def __init__(self, master):
+		super().__init__(master)
+		self.master = master
+		self['bg'] = 'white'
+
+		self.register_frame()
+
+		self.place(relx=.25, rely=0.03, relwidth=.74, relheight=.91)
+
+	# All the widgets for RegisterFrame go here. 
+	def register_frame(self):
+		# Defining our label widgets.
+		self.labelRegister = tk.Label(self, text='Register New Account', bg='white', font=('Verdana', 16, 'bold'), anchor='center')
+		self.labelLine = tk.Label(self, bg=menuColor)
+		self.labelPlatform = tk.Label(self, text='Platform ', bg='white', anchor='e')
+		self.labelUsername = tk.Label(self, text='Username ', bg='white',  anchor='e')
+		self.labelPassword = tk.Label(self, text='Password ', bg='white',  anchor='e')
+		# Defining our entry widgets. 
+		self.entryPlatform = tk.Entry(self)
+		self.entryUsername = tk.Entry(self)
+		self.entryPassword = tk.Entry(self) 
+		# Defining our button widget. 
+		self.buttonCreate = tk.Button(self, text='Create', bg=menuColor, fg='white', activebackground=buttonColor,
+			bd=0, highlightthickness=0, font=('Verdana', 10, 'bold'), command=self.create_call)
+
+		# Placing our widgets on the frame. 
+		self.labelRegister.place(relwidth=1, relheight=.1)
+		self.labelLine.place(rely=.1, relwidth=1, relheight=.015)
+		self.labelPlatform.place(relx=.23, rely=.3, relwidth=.2, relheight=.05)
+		self.labelUsername.place(relx=.23,rely=.37, relwidth=.2, relheight=.05)
+		self.labelPassword.place(relx=.23,rely=.44, relwidth=.2, relheight=.05)
+		self.entryPlatform.place(relx=.43, rely=.3, relwidth=.25, relheight=.05)
+		self.entryUsername.place(relx=.43, rely=.37, relwidth=.25, relheight=.05)
+		self.entryPassword.place(relx=.43, rely=.44, relwidth=.25, relheight=.05) 
+		self.buttonCreate.place(relx=.35, rely=.51, relwidth=.28, relheight=.05)
+
+	# Create a new account and add it to dbm file.
+	def create_call(self):
+		with shelve.open('platform') as file:
+			tempTitle = self.entryPlatform.get().title()
+			file[self.entryPlatform.get().lower()] = {'user':self.entryUsername.get(),'pass':self.entryPassword.get()}
+			ourStatus.statusVar.set(f'{tempTitle} is successfully registered')
+
+		self.entryPlatform.delete(0, tk.END)
+		self.entryUsername.delete(0, tk.END)
+		self.entryPassword.delete(0, tk.END)
+
 
 # New window to delete existing platforms and accounts. 
-class DeleteWindow(tk.Frame):
+class RemoveFrame(tk.Frame):
 	def __init__(self,master):
 		super().__init__(master)
-		self.master = master 
+		self.master = master
+		self['bg'] = 'white'
 
-		self.d_window_config()
-		self.d_frame_top()
-		self.d_frame_bot()
+		self.remove_frame()
 
-		self.pack(fill=tk.BOTH, expand=True)
+		self.place(relx=.25, rely=0.03, relwidth=.74, relheight=.91)
 
-	def d_window_config(self):
-		self['bg'] = 'black'
+	# Place all our RemoveFrame widgets here.  
+	def remove_frame(self):
+		self.buttonDic = {} # Dictionary containing our dbm file buttons
+		self.xPos = .025
+		self.yPos = .025 
+		self.buttonFrame = tk.Frame(self, bg='white')
+		self.buttonFrame.place(rely=.115, relwidth=1, relheight=.83)
 
-	def d_frame_top(self):
-		self.dButtonDic = {}
-		buttonPos = 0.05
-		self.frameTop = tk.Frame(self)
-
+		# Defining our buttons based on the contents of dbm file and storing them into a dictionary.
 		with shelve.open('platform') as file:
-			for key in file:
-				self.dButtonDic.setdefault(key, tk.Button(self.frameTop, text=key.title(), bg=buttonColor, fg='black', font=('Helvetica',14,'bold'),
-													 command=lambda each=key:self.select_platform(each)))
+			for each in file:
+				self.buttonDic.setdefault(each, tk.Button(self.buttonFrame, text=each.title(), 
+					command=lambda event=each: self.select_call(event)))
 
-		for key in self.dButtonDic.keys():
-			self.dButtonDic[key].place(rely=buttonPos , relx=.25, relheight=.05, relwidth=.5)
-			buttonPos += .075
+		# Configuring the button appearance.
+		for each in self.buttonDic.keys():
+			self.buttonDic[each]['bg'] = menuColor
+			self.buttonDic[each]['fg'] = 'white'
+			self.buttonDic[each]['activebackground'] = buttonColor
+			self.buttonDic[each]['activeforeground'] = 'white'
+			self.buttonDic[each]['bd'] = 0
+			self.buttonDic[each]['highlightthickness'] = 0
+			self.buttonDic[each]['font'] = ('Verdana', 10, 'bold')
 
-		self.frameTop.place(rely=0, relheight=.8, relwidth=1)
+		# Placing our buttons from the dictionary to the HomeFrame. 
+		for each in self.buttonDic.keys():
+			self.buttonDic[each].place(relx=self.xPos, rely=self.yPos, relwidth=.3, relheight=.3)
+			self.xPos += .325
+			if self.xPos > .9:
+				self.xPos = .025
+				self.yPos += .325
 
+		# Defining our label widgets.
+		self.labelRemove = tk.Label(self, text='Remove Account', bg='white', font=('Verdana', 16, 'bold'), anchor='center')
+		self.labelLine = tk.Label(self, bg=menuColor)
 
-	def d_frame_bot(self):
-		self.frameBot = tk.Frame(self)
-		self.deleteButton = tk.Button(self.frameBot, text='Remove Platform', bg=buttonColor, fg='black', font=('Helvetica',20,'bold'), command=self.delete_call) 
-		self.backButton =  tk.Button(self.frameBot, text='Back', bg=buttonColor, fg='black', font=('Helvetica',20,'bold'), command=self.back_call)
+		# Defining our delete button widget.
+		self.buttonDelete = tk.Button (self, text='Delete Selected', bg=menuColor, fg='white', activebackground=buttonColor,
+			bd=0, highlightthickness=0, font=('Verdana', 10, 'bold'), command=self.delete_call)
 
-		self.frameBot.place(rely=.8, relheight=.2, relwidth=1)
-		self.deleteButton.pack(fill=tk.BOTH, expand=True)
-		self.backButton.pack(fill=tk.BOTH, expand=True)
+		# Placing all other widgets to the screen. 
+		self.labelRemove.place(relwidth=1, relheight=.1)
+		self.labelLine.place(rely=.1, relwidth=1, relheight=.015)
+		self.buttonDelete.place(relx=.35, rely=.937, relwidth=.3, relheight=.05 )
 
-	def select_platform(self, event):
-		if self.dButtonDic[event]['relief'] != 'sunken':
-			self.dButtonDic[event]['relief']= 'sunken'
-			self.dButtonDic[event]['bg'] = 'white'
+	# Changes background for selected buttons. This method is connected to self.delete_call. 
+	def select_call(self, event):
+		if self.buttonDic[event]['bg'] == menuColor:
+			self.buttonDic[event]['bg'] = buttonColor
 		else:
-			self.dButtonDic[event]['relief']= 'flat'
-			self.dButtonDic[event]['bg'] = buttonColor
+			self.buttonDic[event]['bg'] = menuColor
 
+	# Deletes the selected buttons in our dbm file. 
 	def delete_call(self):
-		for each in self.dButtonDic.keys():
-			if self.dButtonDic[each]['relief'] == 'sunken':
+		deleted = []
+		for each in self.buttonDic.keys():
+			if self.buttonDic[each]['bg'] == buttonColor:
+				deleted.append(each)
 				with shelve.open('platform') as file:
 					del file[each]
-
-		self.destroy()
-		DeleteWindow(root)
-
-	def back_call(self):
-		self.destroy()
-		MainWindow(root)
+		deletedString = ','.join(deleted)
+		ourMenu.remove_call()
+		ourStatus.statusVar.set(f' {deletedString} have been deleted')
 
 # Run our app.
 if __name__ == '__main__':
 	root = tk.Tk()
 	root.title('Pass Volt')
-	root.geometry('600x500')
-	root.config(bg='black')
-	App(root)
+	root.geometry('850x550')
+	ourMenu = MainMenu(root)
+	Login(ourMenu)
+	ourStatus = StatusFrame(root)
 	root.mainloop()
