@@ -9,8 +9,8 @@ This shold be a secure solution as long as you do not share the dbm file to othe
 
 Dependencies:
 
-*pyperclip
-*shelve, tkinter (both in standard lib)
+* pyperclip
+* shelve, tkinter (both in standard lib)
 
 Current Features:
 
