@@ -33,6 +33,6 @@ Work in progress:
 
 Future plans:
 
-* Might make GUI even nicer.
+* Might make GUI even nicer—add icons, logo, fancier backgounds, etc. 
 * Make a mobile version using kivy. 
   
