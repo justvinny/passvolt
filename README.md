@@ -8,6 +8,7 @@ Pass Volt stores all acount information into a local dbm file on your device usi
 This shold be a secure solution as long as you do not share the dbm file to other people or get your device stolen. :)
 
 Dependencies:
+
 *pyperclip
 *shelve, tkinter (both in standard lib)
 
