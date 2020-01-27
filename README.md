@@ -1,4 +1,4 @@
-# Pass Volt
+# Pass Volt v1.0
 Password management GUI made with Python's tkinter module.
 
 It's main purpose is to make remembering unique complex passwords for your multiple accounts easier. 
@@ -11,13 +11,21 @@ Current Features:
 
 * Login page so only you can access the data. Input fields characters are also hidden to protect your account from prying eyes. :)
 * Input validation for entry fields. Also, if new user, automatically creates account based on first input.  
+* Main menu/navigation that is located on the left part of the screen.
 * Create new platform accounts that will be stored in the dbm file.
 * Delete existing accounts that will be removed from the dbm file.
+* Status bar that shows results based on button presses is located on the lower right side of the screen.
 * Using the pyperclip module, automatically copies the password to the clipboard.
   
   
 Work in progress:
 
-* GUI design and formatting
+* Package into exe file for windows.
+* ~~GUI design revamped~~ COMPLETED 27/1/2020
 * ~~Create Pass Volt password page if new user.~~ COMPLETED 26/1/2020
+
+Future plans:
+
+* Might make GUI even nicer.
+* Make a mobile version using kivy. 
   
