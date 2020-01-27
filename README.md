@@ -27,7 +27,7 @@ Current Features:
   
 Work in progress:
 
-* Package into exe file for windows.
+* ~~Package into exe file for windows.~~
 * ~~GUI design revamped~~ COMPLETED 27/1/2020
 * ~~Create Pass Volt password page if new user.~~ COMPLETED 26/1/2020
 
