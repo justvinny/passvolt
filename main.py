@@ -13,9 +13,19 @@ import shelve
 import pyperclip
 
 buttonColor = '#0099ff' # Background color for all active buttons.
-menuColor = '#2f2f1e' # Background color for all menu frames. 
+menuColor = '#2f2f1e' # Background color for all buttons. 
 
+# Changes button color when mouse cursor hovers over it.
+# This function is made specifically for windows as tkinter.button['activebackground'] doesn't work as intended.
+def on_enter(event, button):
+        button['bg'] = buttonColor
 
+# Changes button color back to normal when mouse cursor stops hovering over it.
+# This function is made specifically for windows as tkinter.button['activebackground'] doesn't work as intended.
+def on_leave(event, button):
+        button['bg'] = menuColor
+        
+        
 # Login Screen
 class Login(tk.Frame):
 	def __init__(self, master):
@@ -49,6 +59,8 @@ class Login(tk.Frame):
 		self.buttonSubmit = tk.Button(self, text='Submit', font=('Helvetica',15,'bold'), bg=menuColor, fg='white',
 		 activebackground=buttonColor, command=self.submit_call)
 		self.buttonSubmit.bind('<Return>', lambda event: self.submit_call(event))
+		self.buttonSubmit.bind('<Enter>', lambda event: on_enter(event, self.buttonSubmit))
+		self.buttonSubmit.bind('<Leave>', lambda event: on_leave(event, self.buttonSubmit))
 
 		# Packing our widgets onto the screen.
 		self.labelTitle.place(relx=.25, rely=.18, relwidth=.5, relheight=.1)
@@ -143,6 +155,8 @@ class MainMenu(tk.Frame):
 			each['highlightthickness'] = 0
 			each['activebackground'] = buttonColor
 			each['font'] = ('Verdana', 10, 'bold')
+			each.bind('<Enter>', lambda event, button = each: on_enter(event, button))
+			each.bind('<Leave>', lambda event, button = each: on_leave(event, button))
 
 		# Placing our widgets onto the menu frame. 
 		self.buttonHome.place(rely=.1, relwidth=1, relheight=.05)
@@ -282,7 +296,7 @@ class RegisterFrame(tk.Frame):
 		# Defining our entry widgets. 
 		self.entryPlatform = tk.Entry(self)
 		self.entryUsername = tk.Entry(self)
-		self.entryPassword = tk.Entry(self) 
+		self.entryPassword = tk.Entry(self, show='*') 
 		# Defining our button widget. 
 		self.buttonCreate = tk.Button(self, text='Create', bg=menuColor, fg='white', activebackground=buttonColor,
 			bd=0, highlightthickness=0, font=('Verdana', 10, 'bold'), command=self.create_call)
@@ -394,3 +408,4 @@ if __name__ == '__main__':
 	Login(ourMenu)
 	ourStatus = StatusFrame(root)
 	root.mainloop()
+
