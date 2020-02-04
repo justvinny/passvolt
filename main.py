@@ -13,9 +13,19 @@ import shelve
 import pyperclip
 
 buttonColor = '#0099ff' # Background color for all active buttons.
-menuColor = '#2f2f1e' # Background color for all menu frames. 
+menuColor = '#2f2f1e' # Background color for all buttons. 
 
+# Changes button color when mouse cursor hovers over it.
+# This function is made specifically for windows as tkinter.button['activebackground'] doesn't work as intended.
+def on_enter(event, button):
+        button['bg'] = buttonColor
 
+# Changes button color back to normal when mouse cursor stops hovering over it.
+# This function is made specifically for windows as tkinter.button['activebackground'] doesn't work as intended.
+def on_leave(event, button):
+        button['bg'] = menuColor
+        
+        
 # Login Screen
 class Login(tk.Frame):
 	def __init__(self, master):
@@ -49,6 +59,9 @@ class Login(tk.Frame):
 		self.buttonSubmit = tk.Button(self, text='Submit', font=('Helvetica',15,'bold'), bg=menuColor, fg='white',
 		 activebackground=buttonColor, command=self.submit_call)
 		self.buttonSubmit.bind('<Return>', lambda event: self.submit_call(event))
+		# Bindings for buttons to change color when mouse hovers over them on Windows OS.
+		self.buttonSubmit.bind('<Enter>', lambda event: on_enter(event, self.buttonSubmit))
+		self.buttonSubmit.bind('<Leave>', lambda event: on_leave(event, self.buttonSubmit))
 
 		# Packing our widgets onto the screen.
 		self.labelTitle.place(relx=.25, rely=.18, relwidth=.5, relheight=.1)
@@ -98,6 +111,7 @@ class Login(tk.Frame):
 	def new_window(self):
 		self.destroy()
 		ourMenu.menu_buttons()
+		ourMenu.menu_logo()
 		ourMenu.home_call()
 
 
@@ -122,6 +136,19 @@ class MainMenu(tk.Frame):
 		self.menu = tk.Frame(self, bg=menuColor)
 		self.menu.place(relwidth=.25, relheight=1)
 
+	# Main menu title/logo.
+	def menu_logo(self):
+		# Defining our title/logo label widget.
+		self.labelLogo = tk.Label(self.menu, text='Pass Volt', bg=menuColor, fg='white', font=('Verdana', 16, 'bold'), anchor='s')
+		# Defining our lines for menu styling.
+		self.labelLine = tk.Label(self.menu, bg='#1a1a10')
+		self.labelLine2 = tk.Label(self.menu, bg='#1a1a10')
+
+		# Placing all of the widgets on to self.menu frame. 
+		self.labelLogo.place(relwidth=1, relheight=.11)
+		self.labelLine.place(rely=.14, relwidth=1, relheight=.0025)
+		self.labelLine2.place(rely=.39, relwidth=1, relheight=.0025)
+
 	# Main menu frame and its widgets.
 	def menu_buttons(self):
 		# Boolean values to check which frame--HomeFrame, RegisterFrame or RemoveFrame--is being used.
@@ -143,12 +170,15 @@ class MainMenu(tk.Frame):
 			each['highlightthickness'] = 0
 			each['activebackground'] = buttonColor
 			each['font'] = ('Verdana', 10, 'bold')
+			# Bindings for buttons to change color when mouse hovers over them on Windows OS.
+			each.bind('<Enter>', lambda event, button = each: on_enter(event, button))
+			each.bind('<Leave>', lambda event, button = each: on_leave(event, button))
 
 		# Placing our widgets onto the menu frame. 
-		self.buttonHome.place(rely=.1, relwidth=1, relheight=.05)
-		self.buttonRegister.place(rely=.16, relwidth=1, relheight=.05)
-		self.buttonRemove.place(rely=.22, relwidth=1, relheight=.05)
-		self.buttonBack.place(rely=.28, relwidth=1, relheight=.05)
+		self.buttonHome.place(rely=.15, relwidth=1, relheight=.05)
+		self.buttonRegister.place(rely=.21, relwidth=1, relheight=.05)
+		self.buttonRemove.place(rely=.27, relwidth=1, relheight=.05)
+		self.buttonBack.place(rely=.33, relwidth=1, relheight=.05)
 
 	# Check which frame to destroy.
 	def check_destroy(self):
@@ -234,6 +264,9 @@ class HomeFrame(tk.Frame):
 			self.buttonDic[each]['bd'] = 0
 			self.buttonDic[each]['highlightthickness'] = 0
 			self.buttonDic[each]['font'] = ('Verdana', 10, 'bold')
+			# Bindings for buttons to change color when mouse hovers over them on Windows OS.
+			self.buttonDic[each].bind('<Enter>', lambda event, button=self.buttonDic[each]: on_enter(event, button))
+			self.buttonDic[each].bind('<Leave>', lambda event, button=self.buttonDic[each]: on_leave(event, button))
 
 		# Placing our buttons from the dictionary to the HomeFrame. 
 		for each in self.buttonDic.keys():
@@ -282,10 +315,13 @@ class RegisterFrame(tk.Frame):
 		# Defining our entry widgets. 
 		self.entryPlatform = tk.Entry(self)
 		self.entryUsername = tk.Entry(self)
-		self.entryPassword = tk.Entry(self) 
+		self.entryPassword = tk.Entry(self, show='*') 
 		# Defining our button widget. 
 		self.buttonCreate = tk.Button(self, text='Create', bg=menuColor, fg='white', activebackground=buttonColor,
 			bd=0, highlightthickness=0, font=('Verdana', 10, 'bold'), command=self.create_call)
+		# Bindings for buttons to change color when mouse hovers over them on Windows OS.
+		self.buttonCreate.bind('<Enter>', lambda event: on_enter(event, self.buttonCreate))
+		self.buttonCreate.bind('<Leave>', lambda event: on_leave(event, self.buttonCreate))
 
 		# Placing our widgets on the frame. 
 		self.labelRegister.place(relwidth=1, relheight=.1)
@@ -344,6 +380,9 @@ class RemoveFrame(tk.Frame):
 			self.buttonDic[each]['bd'] = 0
 			self.buttonDic[each]['highlightthickness'] = 0
 			self.buttonDic[each]['font'] = ('Verdana', 10, 'bold')
+			# Bindings for buttons to change color when mouse hovers over them on Windows OS.
+			self.buttonDic[each].bind('<Enter>', lambda event, button=self.buttonDic[each]: on_enter(event, button))
+			self.buttonDic[each].bind('<Leave>', lambda event, button=self.buttonDic[each]: on_leave(event, button))
 
 		# Placing our buttons from the dictionary to the HomeFrame. 
 		for each in self.buttonDic.keys():
@@ -360,6 +399,9 @@ class RemoveFrame(tk.Frame):
 		# Defining our delete button widget.
 		self.buttonDelete = tk.Button (self, text='Delete Selected', bg=menuColor, fg='white', activebackground=buttonColor,
 			bd=0, highlightthickness=0, font=('Verdana', 10, 'bold'), command=self.delete_call)
+		# Bindings for buttons to change color when mouse hovers over them on Windows OS.
+		self.buttonDelete.bind('<Enter>', lambda event: on_enter(event, self.buttonDelete))
+		self.buttonDelete.bind('<Leave>', lambda event: on_leave(event, self.buttonDelete))
 
 		# Placing all other widgets to the screen. 
 		self.labelRemove.place(relwidth=1, relheight=.1)
