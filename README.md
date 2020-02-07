@@ -1,4 +1,4 @@
-# Pass Volt v1.0
+# Pass Volt v1.1
 Password management GUI made with Python's tkinter module.
 
 It's main purpose is to make remembering unique complex passwords for your multiple accounts easier. 
@@ -6,6 +6,11 @@ It's main purpose is to make remembering unique complex passwords for your multi
 Pass Volt stores all acount information into a local dbm file on your device using Python's shelve module.
 
 This shold be a secure solution as long as you do not share the dbm file to other people or get your device stolen. :)
+
+What's new:
+* Finished fixing buttons not highlighting properly on Windows OS.
+* Hidden password field when registering a new platform.
+* Minor UI design tweaks—added title header for main menu and added borders for menu.
 
 Dependencies:
 
