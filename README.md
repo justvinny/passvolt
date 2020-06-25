@@ -7,8 +7,9 @@ Pass Volt stores all acount information into a local dbm file on your device usi
 
 This shold be a secure solution as long as you do not share the dbm file to other people or get your device stolen. :)
 
+Screenshots: 
 
-![alt text](https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Login.png = 250x250)
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Login.png" width="48" height="48">
 
 ![alt text](https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Home.png?raw=true)
 
