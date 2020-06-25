@@ -9,16 +9,17 @@ This shold be a secure solution as long as you do not share the dbm file to othe
 
 Screenshots: 
 
-<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Login.png" width="48" height="48">
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Login.png" width="250" height="250">
 
-![alt text](https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Home.png?raw=true)
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Home.png" width="250" height="250>
+                                                                                                            
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_NewPlatform.png" width="250" height="250>                                                                                                                                                                                                                
 
-![alt text](https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_NewPlatform.png?raw=true)
-
-![alt text](https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Remove1.png?raw=true)
-
-![alt text](https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Remove2.png?raw=true)
-
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Remove1.png" width="250" height="250>
+  
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Remove2.png" width="250" height="250>
+                                                                                                            
+                                                                                                            
 What's new:
 * Finished fixing buttons not highlighting properly on Windows OS.
 * Hidden password field when registering a new platform.
