@@ -5,7 +5,7 @@ It's main purpose is to make remembering unique complex passwords for your multi
 
 Pass Volt stores all acount information into a local dbm file on your device using Python's shelve module.
 
-This shold be a secure solution as long as you do not share the dbm file to other people or get your device stolen. :)
+This should be a secure solution as long as you do not share the dbm file to other people or get your device stolen. :)
 
 # Screenshots: 
 
