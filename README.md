@@ -9,15 +9,15 @@ This shold be a secure solution as long as you do not share the dbm file to othe
 
 Screenshots: 
 
-<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Login.png" width="250" height="250">
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Login.png" width="250" height="250"></img>
 
-<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Home.png" width="250" height="250>
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Home.png" width="250" height="250></img>
                                                                                                             
-<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_NewPlatform.png" width="250" height="250>                                                                                                                                                                                                                
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_NewPlatform.png" width="250" height="250></img>                                                                                                                                                                                                                
 
-<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Remove1.png" width="250" height="250>
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Remove1.png" width="250" height="250></img>
   
-<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Remove2.png" width="250" height="250>
+<img src="https://github.com/justvinny/tk_PassVolt/blob/master/screenshots/SS_Remove2.png" width="250" height="250></img>
                                                                                                             
                                                                                                             
 What's new:
