@@ -1,7 +1,7 @@
 # Android Version made in Java
 [Android Version](https://github.com/justvinny/pass-vault-java-android)
 
-# Pass Volt v1.1
+# Pass Volt v1.1 (Desktop)
 Password management GUI made with Python's tkinter module.
 
 It's main purpose is to make remembering unique complex passwords for your multiple accounts easier. 
